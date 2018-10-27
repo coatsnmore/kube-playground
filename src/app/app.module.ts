@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule }    from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { BooksComponent } from './books/books.component';
-
-import { FormsModule } from '@angular/forms';
 import { BookDetailComponent } from './book-detail/book-detail.component';
 
 @NgModule({
@@ -17,7 +17,9 @@ import { BookDetailComponent } from './book-detail/book-detail.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 <div>
     Books:
-    <ul class="books">
+    <ul  [@loadingBooks]="loadState()" class="books">
       <li *ngFor="let book of books">
         <a class="badge" (click)="onSelect(book)" href="#">{{book.title}}</a>
       </li>
