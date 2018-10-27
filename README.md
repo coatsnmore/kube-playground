@@ -1,5 +1,22 @@
 # AngularPlayground
 
+`ng serve --open` will automatically open your browser.
+
+## Style
+
+* Components shouldn't fetch or save data directly and they certainly shouldn't knowingly present fake data. They should focus on presenting data and delegate data access to a service.
+
+
+## Compilers
+
+The JIT (Just in Time) compiler is default, and compiles templates in the browser.  Adding `--aot` to a build command uses the AOT (Ahead of Time) compiler and compiles templates as part of the build process.  This is much more efficient.
+
+So... `ng serve --open --aot`
+
+
+
+# Generated Doc
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.2.
 
 ## Development server

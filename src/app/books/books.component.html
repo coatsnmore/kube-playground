@@ -1,0 +1,11 @@
+<div>
+    Books:
+    <ul class="books">
+      <li *ngFor="let book of books">
+        <a class="badge" (click)="onSelect(book)" href="#">{{book.title}}</a>
+      </li>
+    </ul>
+  </div>
+
+  <hr>
+  <app-book-detail [book]="selectedBook"></app-book-detail>

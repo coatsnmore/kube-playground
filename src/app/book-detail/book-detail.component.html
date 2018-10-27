@@ -1,0 +1,27 @@
+<div *ngIf="book">
+  <div>Title: {{book.title}}
+  </div>
+
+  <div>Author: {{book.author}}
+  </div>
+
+  <div>
+    Comments:
+    <ul class="books">
+      <li *ngFor="let comment of book.comments">
+        <span class="badge">{{comment}}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <label>Enter Comment:
+      <input [(ngModel)]="comment" placeholder="this book sucked...">
+    </label>
+
+    <div>
+      <button (click)="addComment()">Add Comment</button>
+    </div>
+  </div>
+
+</div>
