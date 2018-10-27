@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Book } from '../book-detail/book';
+import { Book } from '../book';
 import { BookService } from '../book.service';
 
 @Component({
@@ -23,7 +23,8 @@ export class BooksComponent implements OnInit {
     this.selectedBook = book;
   }
 
-  getbooks(){
-    this.books = this.bookService.getBooks();
+  getbooks() {
+    this.bookService.getBooks()
+      .subscribe(books => this.books = books);
   }
 }
