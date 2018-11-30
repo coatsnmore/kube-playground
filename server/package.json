@@ -1,0 +1,22 @@
+{
+    "name": "angular-playground",
+    "version": "0.0.0",
+    "scripts": {
+      "ng": "ng",
+      "start": "ng serve",
+      "build": "ng build",
+      "test": "ng test",
+      "lint": "ng lint",
+      "e2e": "ng e2e",
+      "server": "nodemon server.js"
+    },
+    "private": true,
+    "dependencies": {
+        "cors": "^2.8.4",
+        "express": "^4.16.4"
+    },
+    "devDependencies": {
+      "nodemon": "^1.18.5"
+    }
+  }
+  
