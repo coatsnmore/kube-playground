@@ -24,7 +24,7 @@ or
 
 # Quick Start
 
-## Without Config
+## Without Config (Option 1)
 
 1. Deploy
 
@@ -57,7 +57,7 @@ minikube service hello-node --url
 curl http://<IP>:<NodePort>/books
 ```
 
-## With Config
+## With Config (Option 2 -- Preferred)
 
 1. Deploy and Expose as a Service
 
@@ -65,9 +65,7 @@ curl http://<IP>:<NodePort>/books
 kubectl create -f app.yaml
 ```
 
-# Deploy Dashboard
-
-Refer to the [Dashboard Github repo](https://github.com/kubernetes/dashboard).
+# Deploy the [Kubernetes Dashboard](https://github.com/kubernetes/dashboard)
 
 1. Start Dashboard.
 
