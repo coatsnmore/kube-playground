@@ -1,25 +1,21 @@
 SET TAG=1.0
-SET APP_NAME=webapp
 SET PORT=30080
 SET USER=coatsn
+SET CACHE_DATE=%date:~10,4%
 
 REM cleanup any previous kube stuff
-kubectl delete deployment %APP_NAME%
-kubectl delete service %APP_NAME%-svc
+kubectl delete -f ..\app.yaml
 
 REM build server
 cd ../server
-docker build -t %USER%/node-server:%TAG% .
+docker build --build-arg CACHE_DATE=%CACHE_DATE% -t %USER%/node-server:%TAG% .
 
 REM build angular web app
 cd ..
-docker build -t %USER%/angular-web:%TAG% .
+docker build --build-arg CACHE_DATE=%CACHE_DATE% -t %USER%/angular-web:%TAG% .
 
 REM deploy
-kubectl create -f deployment.yaml
-
-REM run as service and expose post
-kubectl create -f service.yaml
+kubectl create -f app.yaml
 
 REM test
 curl.exe http://localhost:30080/books

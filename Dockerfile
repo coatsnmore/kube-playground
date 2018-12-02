@@ -9,6 +9,7 @@ RUN npm install
 # alpine extras for debugging
 RUN apk add bash bash-doc bash-completion curl
 
+ARG CACHE_DATE
 COPY . ./
 
 # start app

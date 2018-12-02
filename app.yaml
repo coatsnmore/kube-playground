@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-svc
+  labels:
+    app: webapp1
+spec:
+  type: NodePort
+  ports:
+  - name: web
+    port: 4200
+    nodePort: 32400
+  - name: server
+    port: 3000
+    nodePort: 32300
+  selector:
+    app: webapp
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp-server
+        image: coatsn/node-server:1.0
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: IfNotPresent
+      - name: webapp
+        image: coatsn/angular-web:1.0
+        ports:
+        - containerPort: 4200
+        imagePullPolicy: IfNotPresent
