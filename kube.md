@@ -47,7 +47,7 @@ curl http://<IP>:<NodePort>/books
 kubectl create -f app.yaml
 ```
 
-## Deploy Dashboard
+# Deploy Dashboard
 
 Refer to the [Dashboard Github repo](https://github.com/kubernetes/dashboard).
 
@@ -67,6 +67,26 @@ kubectl proxy
 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/persistentvolume?namespace=default
 
+# Install [Helm](https://helm.sh/)
+
+## Install Helm Client
+
+with package managers...
+
+`brew install kubernetes-helm`
+
+`choco install kubernetes-helm -y`
+
+or if you don't have `brew` or `choco` installed, follow the [instructions to install Helm without a package manager](https://docs.helm.sh/using_helm/#installing-helm).
+
+## Initialize Helm and Install Tiller
+
+The easiest way to install tiller into the cluster is simply to run `helm init`. This will validate that helm’s local environment is set up correctly (and set it up if necessary). Then it will connect to whatever cluster kubectl connects to by default (`kubectl config view`). Once it connects, it will install tiller into the kube-system namespace.
+
+After helm init, you should be able to run `kubectl get pods --namespace kube-system` and see Tiller running.
+
+## **TODO** Install Something with Helm
+
 # Config Help
 
 `kubectl explain service --recursive`
@@ -74,6 +94,7 @@ http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-da
 # References
 
 * [API and Config Reference](https://v1-10.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
+* [Kubernetes Examples](https://github.com/kubernetes/examples)
 * [Networking Under the Hood](https://www.digitalocean.com/community/tutorials/kubernetes-networking-under-the-hood)
 * [Networking Glossary](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 * [IP Addresses, Subnets, and CIDR Notation for Networking](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
