@@ -1,8 +1,26 @@
 # Setup
 
+**Prerequisite: Docker for [Windows|Mac]**
+
+Recommended Prereq: [Homebrew Package Manager for OSX](https://brew.sh/) or [Chocolatey Package Manager for Windows](https://chocolatey.org/)
+
+## Enable Kubernets
+
 Prefer Docker for [Windows|Mac] if using latest Docker client.  Enable Kubernetes through Docker UI.
 
 If that does not work, use minikube.
+
+## Install `kubectl`
+
+[Kubernetes Controller Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
+### TLDR;
+
+`brew install kubernetes-cli`
+
+or 
+
+`choco install kubernetes-cli`
 
 # Quick Start
 
