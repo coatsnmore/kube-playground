@@ -67,6 +67,10 @@ kubectl proxy
 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/persistentvolume?namespace=default
 
+# Config Help
+
+`kubectl explain service --recursive`
+
 # References
 
 * [API and Config Reference](https://v1-10.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
