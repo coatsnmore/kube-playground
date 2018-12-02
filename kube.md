@@ -41,16 +41,10 @@ curl http://<IP>:<NodePort>/books
 
 ## With Config
 
-1. Deploy
+1. Deploy and Expose as a Service
 
 ```
-kubectl create -f deployment.yaml
-```
-
-2. Start service and expose port
-
-```
-kubectl create -f service.yaml
+kubectl create -f app.yaml
 ```
 
 ## Deploy Dashboard
