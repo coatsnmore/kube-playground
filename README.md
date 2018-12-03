@@ -16,6 +16,13 @@ Installation Guide to Facilitate Playground-like Activity.
 * Install Helm's server, Tiller, into your local cluster.
 * Install OpenFaaS using Helm
 
+**TODO**
+* Create Function and deploy to OpenFaaS
+* Install and Demonstrate Envoy proxy
+* Install and Manage Istio
+* Create Helm chart
+* Install Jenkins
+
 # (Optional) Install Minikube
 
 Follow [these instructions](/minikube.md) if you need to use `minikube`.
