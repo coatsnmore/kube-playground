@@ -1,44 +1,212 @@
-# AngularPlayground
+# Contents
 
-`ng serve --open` will automatically open your browser.
+* (Optional) Install Minikube
+* Enable local Kubernetes single-node cluster
+* Install Kubernetes Controller `kubectl`
+* Build and deploy a docker container locally
+* Build and run an Angular web app and a Node server in separates pods using a service
+* Install the Kubernetes Dashboard for managing your local cluster
+* Install Helm, the Kubernetes package manager
+* Install Helm's server, Tiller, into your local cluster.
+* Install OpenFaaS using Helm
 
-## Style
+# (Optional) Install Minikube
 
-* Components shouldn't fetch or save data directly and they certainly shouldn't knowingly present fake data. They should focus on presenting data and delegate data access to a service.
+Follow [these instructions](/minikube.md) if you need to use `minikube`.
 
+# Setup
 
-## Compilers
+**Prerequisite: Docker for [Windows|Mac]**
 
-The JIT (Just in Time) compiler is default, and compiles templates in the browser.  Adding `--aot` to a build command uses the AOT (Ahead of Time) compiler and compiles templates as part of the build process.  This is much more efficient.
+Recommended Prereq: [Homebrew Package Manager for OSX](https://brew.sh/) or [Chocolatey Package Manager for Windows](https://chocolatey.org/)
 
-So... `ng serve --open --aot`
+## Enable Kubernetes
 
+Prefer Docker for [Windows|Mac] if using latest Docker client.  Enable Kubernetes through Docker UI.
 
+If that does not work, use minikube.
 
-# Generated Doc
+## Install `kubectl`
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.2.2.
+[Kubernetes Controller Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
-## Development server
+### TLDR;
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+`brew install kubernetes-cli`
 
-## Code scaffolding
+or 
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+`choco install kubernetes-cli`
 
-## Build
+# Quick Start
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Without Config (Option 1)
 
-## Running unit tests
+1. Deploy
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+kubectl run hello-node --image=coatsn/angular-server --port=3000 --image-pull-policy=IfNotPresent
+```
 
-## Running end-to-end tests
+2. Start as service and expose port
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```bash
+kubectl expose deployment hello-node --type=NodePort
+```
 
-## Further help
+3. Find the generated URL
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```bash
+kubectl describe services hello-node
+``` 
+and get the NodePort.
+
+or alternatively if you are using minikube
+
+```bash
+minikube service hello-node --url
+```
+
+4. Test
+
+```bash
+curl http://<IP>:<NodePort>/books
+```
+
+## With Config (Option 2 -- Preferred)
+
+1. Deploy and Expose as a Service
+
+```bash
+kubectl create -f app.yaml
+```
+
+# Deploy the [Kubernetes Dashboard](https://github.com/kubernetes/dashboard)
+
+1. Start Dashboard.
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+```
+
+2. Open secure tunnel to cluster.
+
+```bash
+kubectl proxy
+```
+
+3. Open Web UI Dashboard
+
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/persistentvolume?namespace=default
+
+# Install [Helm](https://helm.sh/)
+
+## Install Helm Client
+
+with package managers...
+
+`brew install kubernetes-helm`
+
+`choco install kubernetes-helm -y`
+
+or if you don't have `brew` or `choco` installed, follow the [instructions to install Helm without a package manager](https://docs.helm.sh/using_helm/#installing-helm).
+
+## Initialize Helm and Install Tiller
+
+The easiest way to install tiller into the cluster is simply to run `helm init`. This will validate that helm’s local environment is set up correctly (and set it up if necessary). Then it will connect to whatever cluster kubectl connects to by default (`kubectl config view`). Once it connects, it will install tiller into the kube-system namespace.
+
+After helm init, you should be able to run `kubectl get pods --namespace kube-system` and see Tiller running.
+
+## Install [OpenFaaS](https://docs.openfaas.com/) with Helm
+
+1. Create RBAC Permissions for Tiller:
+Linux:
+
+```bash
+kubectl -n kube-system create sa tiller \
+ && kubectl create clusterrolebinding tiller \
+      --clusterrole cluster-admin \
+      --serviceaccount=kube-system:tiller
+```
+Windows:
+
+```bat
+kubectl -n kube-system create sa tiller
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+```
+2. Install the server-side Tiller component on your cluster
+
+```bash
+helm init --skip-refresh --upgrade --service-account tiller
+```
+
+3. Install OpenFaaS
+
+**Create Namespace**
+```bash
+kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+```
+
+**Add the OpenFaaS helm chart:**
+```bash
+helm repo add openfaas https://openfaas.github.io/faas-netes/
+```
+
+**Generate Secrets to Apply Basic Auth for API Gateway**
+
+Linux:
+```bash
+# generate a random password
+PASSWORD=$(head -c 12 /dev/urandom | shasum| cut -d' ' -f1)
+kubectl -n openfaas create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password="$PASSWORD"
+```
+
+Windows:
+```bash
+kubectl -n openfaas create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password="MAKEUP_A_PASSWORD"
+```
+
+**Deploy OpenFaaS from the helm chart repo**
+
+Reference: https://github.com/openfaas/faas-netes/blob/master/chart/openfaas/README.md#install
+
+```bash
+helm repo update
+helm upgrade openfaas --install openfaas/openfaas --namespace openfaas --set basic_auth=true --set functionNamespace=openfaas-fn
+```
+
+**Install [OpenFaaS CLI](https://github.com/openfaas/faas-cli)**
+
+Windows: https://github.com/openfaas/faas-cli#windows
+* Install the Executable in this directory.  Make sure it does not get committed into Github.
+
+Linux: https://github.com/openfaas/faas-cli#get-started-install-the-cli
+
+**Find Port**
+```bash
+kubectl get svc -n openfaas gateway-external -o wide
+```
+
+**Login**
+
+```BAT
+.\faas-cli.exe login -g http://localhost:31112 -u admin --password=PASSWORD
+```
+
+**Open the UI**
+
+This is the same port used for logging in from the command line.
+
+http://localhost:31112/ui/
+
+# YAML Config + REST API Help
+
+`kubectl explain service --recursive`
+
+# References
+
+* [API and Config Reference](https://v1-10.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)
+* [Kubernetes Examples](https://github.com/kubernetes/examples)
+* [Networking Under the Hood](https://www.digitalocean.com/community/tutorials/kubernetes-networking-under-the-hood)
+* [Networking Glossary](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
+* [IP Addresses, Subnets, and CIDR Notation for Networking](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
