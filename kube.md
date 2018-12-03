@@ -1,10 +1,21 @@
+# Contents
+
+* Enable local Kubernetes single-node cluster
+* Install Kubernetes Controller `kubectl`
+* Build and deploy a docker container locally
+* Build and run an Angular web app and a Node server in separates pods using a service
+* Install the Kubernetes Dashboard for managing your local cluster
+* Install Helm, the Kubernetes package manager
+* Install Helm's server, Tiller, into your local cluster.
+* Install OpenFaaS using Helm
+
 # Setup
 
 **Prerequisite: Docker for [Windows|Mac]**
 
 Recommended Prereq: [Homebrew Package Manager for OSX](https://brew.sh/) or [Chocolatey Package Manager for Windows](https://chocolatey.org/)
 
-## Enable Kubernets
+## Enable Kubernetes
 
 Prefer Docker for [Windows|Mac] if using latest Docker client.  Enable Kubernetes through Docker UI.
 
@@ -28,32 +39,32 @@ or
 
 1. Deploy
 
-```
+```bash
 kubectl run hello-node --image=coatsn/angular-server --port=3000 --image-pull-policy=IfNotPresent
 ```
 
 2. Start as service and expose port
 
-```
+```bash
 kubectl expose deployment hello-node --type=NodePort
 ```
 
 3. Find the generated URL
 
-```
+```bash
 kubectl describe services hello-node
 ``` 
 and get the NodePort.
 
 or alternatively if you are using minikube
 
-```
+```bash
 minikube service hello-node --url
 ```
 
 4. Test
 
-```
+```bash
 curl http://<IP>:<NodePort>/books
 ```
 
@@ -61,7 +72,7 @@ curl http://<IP>:<NodePort>/books
 
 1. Deploy and Expose as a Service
 
-```
+```bash
 kubectl create -f app.yaml
 ```
 
@@ -69,13 +80,13 @@ kubectl create -f app.yaml
 
 1. Start Dashboard.
 
-```
+```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 ```
 
 2. Open secure tunnel to cluster.
 
-```
+```bash
 kubectl proxy
 ```
 
@@ -101,9 +112,89 @@ The easiest way to install tiller into the cluster is simply to run `helm init`.
 
 After helm init, you should be able to run `kubectl get pods --namespace kube-system` and see Tiller running.
 
-## **TODO** Install Something with Helm
+## Install [OpenFaaS](https://docs.openfaas.com/) with Helm
 
-# Config Help
+1. Create RBAC Permissions for Tiller:
+Linux:
+
+```bash
+kubectl -n kube-system create sa tiller \
+ && kubectl create clusterrolebinding tiller \
+      --clusterrole cluster-admin \
+      --serviceaccount=kube-system:tiller
+```
+Windows:
+
+```bat
+kubectl -n kube-system create sa tiller
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+```
+2. Install the server-side Tiller component on your cluster
+
+```bash
+helm init --skip-refresh --upgrade --service-account tiller
+```
+
+3. Install OpenFaaS
+
+**Create Namespace**
+```bash
+kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
+```
+
+**Add the OpenFaaS helm chart:**
+```bash
+helm repo add openfaas https://openfaas.github.io/faas-netes/
+```
+
+**Generate Secrets to Apply Basic Auth for API Gateway**
+
+Linux:
+```bash
+# generate a random password
+PASSWORD=$(head -c 12 /dev/urandom | shasum| cut -d' ' -f1)
+kubectl -n openfaas create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password="$PASSWORD"
+```
+
+Windows:
+```bash
+kubectl -n openfaas create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password="MAKEUP_A_PASSWORD"
+```
+
+**Deploy OpenFaaS from the helm chart repo**
+
+Reference: https://github.com/openfaas/faas-netes/blob/master/chart/openfaas/README.md#install
+
+```bash
+helm repo update
+helm upgrade openfaas --install openfaas/openfaas --namespace openfaas --set basic_auth=true --set functionNamespace=openfaas-fn
+```
+
+**Install [OpenFaaS CLI](https://github.com/openfaas/faas-cli)**
+
+Windows: https://github.com/openfaas/faas-cli#windows
+* Install the Executable in this directory.  Make sure it does not get committed into Github.
+
+Linux: https://github.com/openfaas/faas-cli#get-started-install-the-cli
+
+**Find Port**
+```bash
+kubectl get svc -n openfaas gateway-external -o wide
+```
+
+**Login**
+
+```BAT
+.\faas-cli.exe login -g http://localhost:31112 -u admin --password=PASSWORD
+```
+
+**Open the UI**
+
+This is the same port used for logging in from the command line.
+
+http://localhost:31112/ui/
+
+# YAML Config + REST API Help
 
 `kubectl explain service --recursive`
 
@@ -114,4 +205,3 @@ After helm init, you should be able to run `kubectl get pods --namespace kube-sy
 * [Networking Under the Hood](https://www.digitalocean.com/community/tutorials/kubernetes-networking-under-the-hood)
 * [Networking Glossary](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 * [IP Addresses, Subnets, and CIDR Notation for Networking](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
-
