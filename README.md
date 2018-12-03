@@ -22,6 +22,7 @@ Installation Guide to Facilitate Playground-like Activity.
 * Install and Manage Istio
 * Create Helm chart
 * Install Jenkins
+* Install CircleCI
 
 # (Optional) Install Minikube
 
