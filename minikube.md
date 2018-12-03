@@ -7,25 +7,22 @@ Prerequsites:
 - install virtualbox through their website
 - install brew if you do not have it from their website
 
-Now let's bring the command line:
-- uprade brew
+Now let's bring up the command line and...
+
 ```bash
+# upgrade brew
 brew update
-```
-install minikube via homebrew
-```bash
+
+# install minikube via homebrew
 brew cask install minikube
-```
-start minikube
-```bash
+
+# start minikube
 minikube start
-```
-setup local images for use by minikube
-```bash
+
+# setup local images for use by minikube
 eval $(minikube docker-env)
-```
-build the image
-```bash
+
+# build the image
 docker build -t coatsn/angular-server .
 ```
 

@@ -56,60 +56,41 @@ or
 
 ## Without Config (Option 1)
 
-1. Deploy
-
 ```bash
+# deploy
 kubectl run hello-node --image=coatsn/angular-server --port=3000 --image-pull-policy=IfNotPresent
-```
 
-2. Start as service and expose port
-
-```bash
+# start as service and expose port
 kubectl expose deployment hello-node --type=NodePort
-```
 
-3. Find the generated URL
-
-```bash
+# find the generated URL
 kubectl describe services hello-node
-``` 
-and get the NodePort.
 
-or alternatively if you are using minikube
-
-```bash
+# get the NodePort or alternatively if you are using minikube
 minikube service hello-node --url
-```
 
-4. Test
-
-```bash
+# test
 curl http://<IP>:<NodePort>/books
 ```
 
 ## With Config (Option 2 -- Preferred)
 
-1. Deploy and Expose as a Service
-
 ```bash
+# deploy and expose as a service
 kubectl create -f app.yaml
 ```
 
 # Deploy the [Kubernetes Dashboard](https://github.com/kubernetes/dashboard)
 
-1. Start Dashboard.
-
 ```bash
+# start dashboard
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-```
 
-2. Open secure tunnel to cluster.
-
-```bash
+# open secure tunnel to cluster
 kubectl proxy
 ```
 
-3. Open Web UI Dashboard
+Open Web UI Dashboard
 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/persistentvolume?namespace=default
 
