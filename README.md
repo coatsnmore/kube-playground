@@ -1,3 +1,9 @@
+# Kubernetes Playground
+
+![Kubernetes Logo](/images/kubernetes-ar21.svg)
+
+Installation Guide to Facilitate Playground-like Activity.
+
 # Contents
 
 * (Optional) Install Minikube
