@@ -6,10 +6,10 @@ Installation Guide to Facilitate Playground-like Activity.
 
 # Contents
 
-* (Optional) Install Minikube
+* (Optional) [Install Minikube]((/docs/minikube.md))
+* [Build and deploy a docker container locally](/docs/local.md)
 * Enable local Kubernetes single-node cluster
 * Install Kubernetes Controller `kubectl`
-* Build and deploy a docker container locally
 * Build and run an Angular web app and a Node server in separates pods using a service
 * Install the Kubernetes Dashboard for managing your local cluster
 * Install Helm, the Kubernetes package manager
@@ -17,16 +17,11 @@ Installation Guide to Facilitate Playground-like Activity.
 * Install OpenFaaS using Helm
 
 **TODO**
-* Create Function and deploy to OpenFaaS
 * Install and Demonstrate Envoy proxy
 * Install and Manage Istio
 * Create Helm chart
 * Install Jenkins
 * Install CircleCI
-
-# (Optional) Install Minikube
-
-Follow [these instructions](/minikube.md) if you need to use `minikube`.
 
 # Setup
 
@@ -51,34 +46,6 @@ If that does not work, use minikube.
 or 
 
 `choco install kubernetes-cli`
-
-# Quick Start
-
-## Without Config (Option 1)
-
-```bash
-# deploy
-kubectl run hello-node --image=coatsn/angular-server --port=3000 --image-pull-policy=IfNotPresent
-
-# start as service and expose port
-kubectl expose deployment hello-node --type=NodePort
-
-# find the generated URL
-kubectl describe services hello-node
-
-# get the NodePort or alternatively if you are using minikube
-minikube service hello-node --url
-
-# test
-curl http://<IP>:<NodePort>/books
-```
-
-## With Config (Option 2 -- Preferred)
-
-```bash
-# deploy and expose as a service
-kubectl create -f app.yaml
-```
 
 # Deploy the [Kubernetes Dashboard](https://github.com/kubernetes/dashboard)
 
@@ -115,6 +82,7 @@ After helm init, you should be able to run `kubectl get pods --namespace kube-sy
 ## Install [OpenFaaS](https://docs.openfaas.com/) with Helm
 
 1. Create RBAC Permissions for Tiller:
+
 Linux:
 
 ```bash
@@ -206,3 +174,4 @@ http://localhost:31112/ui/
 * [Networking Glossary](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 * [IP Addresses, Subnets, and CIDR Notation for Networking](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
 * [Illustrated Guide to Kubernetes Networking](https://medium.com/@ApsOps/an-illustrated-guide-to-kubernetes-networking-part-1-d1ede3322727)
+* [Complete Linux Networking Tutorial](https://www.youtube.com/watch?v=fHgk7aDGn_4)
