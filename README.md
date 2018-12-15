@@ -6,7 +6,7 @@ Installation Guide to Facilitate Playground-like Activity.
 
 # Contents
 
-* (Optional) [Install Minikube]((/docs/minikube.md))
+* (Optional) [Install Minikube](/docs/minikube.md)
 * [Build and deploy a docker container locally](/docs/local.md)
 * Enable local Kubernetes single-node cluster
 * Install Kubernetes Controller `kubectl`
